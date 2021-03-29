@@ -1,0 +1,28 @@
+export CLICOLOR=1
+export LSCOLORS=gxfxcxdxbxegedabagacad
+
+setopt auto_cd
+
+autoload -Uz colors
+colors
+
+autoload -Uz vcs_info
+setopt prompt_subst #プロンプト表示する度に変数を展開
+
+# trueにすると formatsという項目で%cと%uというフォーマットが使えるようになる
+# これは、リポジトリにコミットされていないファイルがあった場合に%cまたは%uに文字列が格納される
+zstyle ':vcs_info:git:*' check-for-changes true
+# ステージングされていてコミットされていないファイルがある場合[%c]に格納される文字列
+zstyle ':vcs_info:git:*' stagedstr "*"
+# ステージングされていないファイルがある場合[%u]に格納される文字列
+zstyle ':vcs_info:git:*' unstagedstr "+"
+# $vcs_info_msg_0_で表示する内容を指定
+zstyle ':vcs_info:*' formats "%F{green}[%b %c%u]%f"
+# mergeでコンフリクトが起きたり、何かしら特殊な状況になった場合に
+# formatsの代わりに actionformatsで指定した文字列が$vcs_info_msg_0_に格納される
+zstyle ':vcs_info:*' actionformats '[%b|%a]'
+
+# 行末に半角スペースがあることを確認
+PROMPT=%{$fg[red]%}%c\ %{$reset_color%}%{$fg[green]%}\$vcs_info_msg_0_%{$reset_color%}\ $\ 
+
+precmd(){ vcs_info }
